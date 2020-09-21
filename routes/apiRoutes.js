@@ -3,9 +3,11 @@
 // We are linking our routes to a series of "data" sources.
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 
-
-var db = require("../db/db.json");
+var { v4: uuidv4 } = require ("uuid");
 var fs = require("fs");
+const util = require("util")
+
+const readFileAsync = util.promisify(fs.readFile);
 
 // ROUTING
 
@@ -17,7 +19,9 @@ module.exports = function (app) {
     // 
 
     app.get("/api/notes/", function (req, res) {
-        res.send(db);
+        fs.readFile ("../db/db.json", "utf8", function(err,data){
+            res.json(data);
+        });
     });
 
     // API POST Requests
@@ -35,15 +39,16 @@ module.exports = function (app) {
 
             let notes = JSON.parse(data);
             let newNote = {
-                id: db.length + 1,
+                id: uuidv4(),
                 title: req.body.title,
                 text: req.body.text
             }
 
             console.log(notes)
             notes.push(newNote);
+            
 
-            fs.writeFile("/db/db.json", JSON.stringify(notes), function (err, data) {
+            fs.writeFile("./db/db.json", JSON.stringify(notes), function (err, data) {
                 if (err) throw err;
                 res.send(db);
             })
@@ -67,8 +72,6 @@ module.exports = function (app) {
             })
         })
 
-
-        //   // ---------------------------------------------------------------------------
         //   // I added this below code so you could clear out the table while working with the functionality.
         //   // Don"t worry about it!
 
@@ -81,4 +84,4 @@ module.exports = function (app) {
         //   });
     });
 
-}
+};
