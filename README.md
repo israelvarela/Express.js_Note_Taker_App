@@ -1,3 +1,4 @@
+![note-taker-home](https://user-images.githubusercontent.com/62815477/93953561-545eed00-fd11-11ea-9061-17b3a23700b5.png)
 
 This is a note taker app built using express and node.js and npm inquirer and fs packages.
 
