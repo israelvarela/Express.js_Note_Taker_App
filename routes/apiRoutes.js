@@ -5,9 +5,6 @@
 
 var { v4: uuidv4 } = require ("uuid");
 var fs = require("fs");
-const util = require("util")
-
-const readFileAsync = util.promisify(fs.readFile);
 
 // ROUTING
 
@@ -16,11 +13,10 @@ module.exports = function (app) {
     // Below code handles when users "visit" a page.
     // In each of the below cases when a user visits a link
     // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
-    // 
 
     app.get("/api/notes/", function (req, res) {
-        fs.readFile ("../db/db.json", "utf8", function(err,data){
-            res.json(data);
+        fs.readFile ("./db/db.json", "utf8", function(err,data){
+            res.json(JSON.parse(data));
         });
     });
 
@@ -30,7 +26,6 @@ module.exports = function (app) {
     // ...the JSON is pushed to the appropriate JavaScript array
     // (ex. User fills out a reservation request... this data is then sent to the server...
     // Then the server saves the data to the tableData array)
-    // 
 
     app.post("/api/notes/", function (req, res) {
 
@@ -50,7 +45,7 @@ module.exports = function (app) {
 
             fs.writeFile("./db/db.json", JSON.stringify(notes), function (err, data) {
                 if (err) throw err;
-                res.send(db);
+                res.send(data);
             })
         })
         // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
@@ -68,20 +63,10 @@ module.exports = function (app) {
 
             fs.writeFile("./db/db.json", JSON.stringify(newNotes), function (err, data) {
                 if (err) throw err;
-                res.send(db);
+                res.send(data);
             })
         })
 
-        //   // I added this below code so you could clear out the table while working with the functionality.
-        //   // Don"t worry about it!
-
-        //   app.post("/api/clear", function(req, res) {
-        //     // Empty out the arrays of data
-        //     tableData.length = 0;
-        //     waitListData.length = 0;
-
-        //     res.json({ ok: true });
-        //   });
     });
 
 };
